@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Order Submission Form</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Order Submission Form</h1>
+        <form id="orderForm">
+            <label for="order_id">Order ID:</label>
+            <input type="text" id="order_id" name="order_id" required>
+
+            <label for="name">Name:</label>
+            <input type="text" id="name" name="name" required>
+
+            <label for="status">Status:</label>
+            <input type="text" id="status" name="status" required>
+
+            <button type="submit">Submit Order</button>
+            <button type="button" onclick="location.href='view-orders.html'">View Orders</button>
+        </form>
+        <p id="responseMessage"></p>
+    </div>
+
+    <script>
+        document.getElementById("orderForm").addEventListener("submit", async (event) => {
+            event.preventDefault();
+
+            const order_id = document.getElementById("order_id").value;
+            const name = document.getElementById("name").value;
+            const status = document.getElementById("status").value;
+
+            try {
+                const response = await fetch("http://localhost:3000/submit-order", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({ order_id, name, status })
+                });
+
+                const message = await response.text();
+                document.getElementById("responseMessage").innerText = message;
+                document.getElementById("responseMessage").style.color = "#27ae60";
+
+                // Clear the form
+                document.getElementById("orderForm").reset();
+            } catch (error) {
+                document.getElementById("responseMessage").innerText = "Failed to submit order.";
+                document.getElementById("responseMessage").style.color = "#e74c3c";
+                console.error("Error:", error);
+            }
+        });
+    </script>
+</body>
+</html>

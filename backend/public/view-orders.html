@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>View Orders</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Submitted Orders</h1>
+        <button onclick="location.href='form.html'">Back to Form</button>
+        <div id="ordersList"></div>
+    </div>
+
+    <script>
+        async function fetchOrders() {
+            try {
+                const response = await fetch("http://localhost:3000/orders");
+                const orders = await response.json();
+
+                const ordersList = document.getElementById("ordersList");
+                ordersList.innerHTML = ""; // Clear previous orders
+                
+                orders.forEach(order => {
+                    const orderItem = document.createElement("div");
+                    orderItem.classList.add("order-item");
+                    orderItem.innerText = `Order ID: ${order.order_id}, Name: ${order.name}, Status: ${order.status}`;
+                    ordersList.appendChild(orderItem);
+                });
+            } catch (error) {
+                console.error("Error fetching orders:", error);
+                document.getElementById("ordersList").innerText = "Failed to fetch orders.";
+            }
+        }
+
+        // Fetch orders when the page loads
+        window.onload = fetchOrders;
+    </script>
+</body>
+</html>
